@@ -8,11 +8,17 @@ The code in this repository is designed for _matrix factorization_: Given an m-b
 ## Input data format
 HAMSI admits a sparse matrix, represented as follows in a plain text file:
 ```
-<ndim> # number of dimensions in the data. Always 2 for a matrix.
-<size1> <size2> # maximum index in each dimension, aka cardinality; or, number of rows and number of columns.
-<nonzerocount> # number of nonzero entries in the matrix.
-<i> <j> <M(i,j)>  # index 1, index 2, and the value of the matrix element at that location. Repeated.
+ndim
+size1 size2
+nonzerocount
+i j M(i,j)
+...
 ```
+where `ndim` gives the number of dimensions in the data (always 2 for a matrix);
+`size1` and `size2` give the maximum index in each dimension (aka cardinality), or, number of rows and number of columns;
+`nonzerocount` gives the number of nonzero entries in the matrix;
+`i j M(i,j)` give the index 1, index 2, and the value of the matrix element at that location. Repeated `nonzerocount` times.
+
 Example: 1M.dat (MovieLens data with 1 million nonzero entries)
 ```
 2
@@ -34,7 +40,8 @@ To compile on the command line:
 
 ## Usage
 The `hamsi` executable takes the following command line arguments.
-```hamsi <data_file> <# of threads> <latent dimension> <max # of iters> <max time> <seed>
+```
+hamsi <data_file> <# of threads> <latent dimension> <max # of iters> <max time> <seed>
 ```
 
 |Argument|Description|
@@ -49,5 +56,7 @@ The `hamsi` executable takes the following command line arguments.
 Example:
 `./hamsi ./data/1M.dat 4 50 5000 10 123456`
 
-## Output
+Note: In the first use of the data file, HAMSI generates a binary copy for more efficient computation and storage. It is stored in the same directory. If you do not erase it, the binary copy will be reused in the next run of the program.
 
+## Output
+HAMSI displays the details of iteration (such as time, iteration number and error) at each step on standard output (the screen). The resulting factor matrices are stored in files named `factor1.dat` and `factor2.dat` in tabular text form. File `factor1.dat` has `m` rows and `k` columns, and file `factor2.dat` has `k` rows and `n` columns. Columns are separated with space, rows are separated with newline character.
