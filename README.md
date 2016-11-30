@@ -15,9 +15,12 @@ i j M(i,j)
 ...
 ```
 where `ndim` gives the number of dimensions in the data (always 2 for a matrix);
+
 `size1` and `size2` give the maximum index in each dimension (aka cardinality), or, number of rows and number of columns;
+
 `nonzerocount` gives the number of nonzero entries in the matrix;
-`i j M(i,j)` give the index 1, index 2, and the value of the matrix element at that location. Repeated `nonzerocount` times.
+
+`i j M(i,j)` give the index 1, index 2, and the value of the matrix element at that location, repeated `nonzerocount` times.
 
 Example: 1M.dat (MovieLens data with 1 million nonzero entries)
 ```
