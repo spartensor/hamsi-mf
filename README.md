@@ -3,8 +3,9 @@ HAMSI (Hessian Approximated Multiple Subsets Iteration) is an incremental optimi
 
 The code given here is developed for research purposes. The related research article (also in this repository) can be consulted for theoretical and algorithmic details.
 
-The code in this repository is designed for _matrix factorization_: Given an m-by-n sparse matrix M, find two matrices X (m-by-k) and Y (k-by-n) such that their product XY is approximately equal to M. The objective function we minimize is the root-mean-square error: 
+The code in this repository is designed for _matrix factorization_: Given an m-by-n sparse matrix M, find two matrices X (m-by-k) and Y (k-by-n) such that their product XY is approximately equal to M. The objective function we minimize is the root-mean-square error.
 
+This code contains only the "balanced strata" scheme for parallelization, which gives the best results compared to other schemes. If you want to experiment with the other schemes we have used in our research, please contact us.
 
 ## Input data format
 HAMSI admits a sparse matrix, represented as follows in a plain text file:
