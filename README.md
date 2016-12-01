@@ -3,7 +3,8 @@ HAMSI (Hessian Approximated Multiple Subsets Iteration) is an incremental optimi
 
 The code given here is developed for research purposes. The related research article (also in this repository) can be consulted for theoretical and algorithmic details.
 
-The code in this repository is designed for _matrix factorization_: Given an m-by-n sparse matrix M, find two matrices X (m-by-k) and Y (k-by-n) such that their product XY is approximately equal to M. We strive to minimize the root-mean-square error: sqrt(sum (M(i,j) - (XY)(i,j))^2)
+The code in this repository is designed for _matrix factorization_: Given an m-by-n sparse matrix M, find two matrices X (m-by-k) and Y (k-by-n) such that their product XY is approximately equal to M. The objective function we minimize is the root-mean-square error: 
+
 
 ## Input data format
 HAMSI admits a sparse matrix, represented as follows in a plain text file:
@@ -34,7 +35,7 @@ Example: 1M.dat (MovieLens data with 1 million nonzero entries)
 ...
 ```
 ## Compiling
-The code is written in C++. The OpenMP library and GSL (GNU SCientific Library) development files are required.
+The code is written in C++. The OpenMP library and GSL (GNU Scientific Library) development files are required.
 
 To compile on the command line:
 `g++ -std=c++11 hamsi_sharedmem.cpp -lgsl -lgslcblas -fopenmp -O3 -o hamsi`
@@ -42,17 +43,17 @@ To compile on the command line:
 ## Usage
 The `hamsi` executable takes the following command line arguments.
 ```
-hamsi <data_file> <# of threads> <latent dimension> <max # of iters> <max time> <seed>
+hamsi <data file> <# of threads> <latent dimension> <max # of iters> <max time> <seed>
 ```
 
-|Argument|Description|
-|--------|-----------|
-|data_file|The text file containing the sparse matrix in the form described above.|
-|# of threads|Number of processor threads should be used in the parallel computation.|
-|latent dimension|The product matrices have sizes m-by-k and k-by-n, respectively.|
-|max # of iters|Stop the computation after so many iterations [INNER? OUTER?]|
-|max time|Stop the computation after so many seconds of wallclock time.|
-|seed|The seed for random number generation.|
+|Argument|Description|Default value|
+|--------|-----------|-------------|
+|data file|The text file containing the sparse matrix in the form described above.|Required|
+|# of threads|Number of processor threads should be used in the parallel computation.|1|
+|latent dimension|The inner dimension k of the factor matrices, which have sizes m-by-k and k-by-n, respectively.|5|
+|max # of iters|Stop the computation after so many iterations.|1000|
+|max time|Stop the computation after so many seconds of wallclock time.|100|
+|seed|The seed for random number generation.|1453|
 
 Example:
 `./hamsi ./data/1M.dat 4 50 5000 10 123456`
