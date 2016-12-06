@@ -16,9 +16,9 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_permutation.h>
 #include <omp.h>
+#include <getopt.h>
 
 using namespace std;
-#define M 5
 
 mt19937 rgen;
 normal_distribution<double> randn(0, 1);
@@ -80,24 +80,88 @@ int writeBinaryData(FILE* bp, int *dim_cards, int* indices, double* vals, int te
   return 1;
 }
 
-int main(int argc, char *argv[]) {
-  if (argc == 1) {
-    cout << "Usage: " << argv[0] << " <filename> <number of threads> <latent dim> <number of iterations> <max time> <random seed>" << endl;
-    return 0;
-  }
+int main(int argc, char **argv) {
+	char bfile[2048]; //binary data file name
+	char filename[2048]; //original data file name
+	int *indices, *temp_indices = nullptr; //stores the coordinates for the nonzeros in the matrix
+	double *vals, *temp_vals = nullptr; //stores the values of the nonzeros in the matrix
+	int* dim_cards; //stores the cardinalities for each matrix dimension
+	int nnz, tensor_dim; 
+	int memoryCounter = 0;
 
-  char bfile[2048]; //binary data file name
-  char filename[2048]; //original data file name
-  if (argc > 1) { //the first argument is the file
-    strcpy(filename, argv[1]);
-  }
+	FILE *bp, *f;
 
-  int *indices, *temp_indices = nullptr; //stores the coordinates for the nonzeros in the matrix
-  double *vals, *temp_vals = nullptr; //stores the values of the nonzeros in the matrix
-  int* dim_cards; //stores the cardinalities for each matrix dimension
-  int nnz, tensor_dim; 
+	/* Parameters and defaults*/
+	int M = 5; // memory size
+	double etaGD = 0.001;
+	double etaLB = 0.06;
+	double gamma = 0.51;
+	double toma = 500;
+	double validityThreshold = 1.0e-6;   //to avoid weird moves
+	int NT = 1; //number of threads that will be used for parallelization
+	int LDIM = 5; //latent dimension - the inner dimension for factorization
+	int EPOCHS = 1000; // number of maximum outer iterations
+	int MAX_TIME = 100; //maximum time allowed for factorization in seconds
+	long int my_seed = 1453; // the random seed
+	char outfile[250] = "factor";
+	if (argc == 1) {
+		cout << "Usage: " 
+		<< argv[0] 
+		<< " -f <filename> [-t<number of threads>] "
+		<< "[-l<latent dim>] [-i<max. number of iterations>] "
+		<< "[-t<max time>] [-s<random seed>] "
+		<< "[-g<gamma>] [-e<etaLB>] "
+		<< "[-a<toma>] [-m<memory size>] "
+		<< "[-o<output file name>]" << endl;
+	return 0;
+	}
 
-  FILE *bp, *f;
+	/* Parse command-line arguments */
+	{
+		static const char *optString = "f:g::m::a::e::p::l::i::t::s::o::";
+		static struct option long_options[] =
+		{
+			{"infile", required_argument, NULL, 'f'},
+			{"gamma", optional_argument, NULL, 'g'},
+			{"memory",optional_argument, NULL, 'm'},
+			{"toma",optional_argument, NULL, 'a'},
+			{"eta", optional_argument, NULL, 'e'},
+			{"nthreads", optional_argument, NULL, 'p'},
+			{"latentdim", optional_argument, NULL, 'l'},
+			{"maxiters", optional_argument, NULL, 'i'},
+			{"maxtime", optional_argument, NULL, 't'},
+			{"randomseed", optional_argument, NULL, 's'},
+			{"output", optional_argument, NULL, 'o'},
+			//{"help", no_argument, NULL, 'h'},
+			{0,0,0,0}
+		};
+		/* getopt_long stores the option index here. */
+		int option_index = 0;
+		int opt = getopt_long( argc, argv, optString, long_options, &option_index );
+		while (opt != -1)
+		{
+		  switch (opt)
+		  {
+			  case 'f': strcpy(filename,optarg); break;
+			  case 'g': gamma =atof(optarg); break;
+			  case 'm': M = atoi(optarg); break;
+			  case 'a': toma = atof(optarg); break;
+			  case 'e': etaLB = atof(optarg); break;
+			  case 'p': NT = atoi(optarg); break;
+			  case 'l': LDIM = atoi(optarg); break;
+			  case 'i': EPOCHS = atoi(optarg); break;
+			  case 't': MAX_TIME = atoi(optarg); break;
+			  case 's': my_seed = atol(optarg); break;
+			  case 'o': strcpy(outfile, optarg); break;
+		  }
+		  opt = getopt_long( argc, argv, optString, long_options, &option_index );
+		}
+
+	}
+  cout << "etaGD " << etaGD << " -  etaLB: " << etaLB << " - gamma:" << gamma << endl;
+  cout << "Random seed is " << my_seed << endl;
+  return 0;
+
   sprintf(bfile, "%s.bin", filename);
   bp = fopen(bfile, "rb");
   if(bp != NULL) { /* read from binary */
@@ -149,39 +213,17 @@ int main(int argc, char *argv[]) {
     cout << "\tdimension " << i << " is " << dim_cards[i] << endl;
   }
   
-  //NT is the number of threads that will be used for parallelization
-  int NT = 1; //the default value
-  if (argc > 2) {
-    NT = atoi(argv[2]);
-    omp_set_num_threads(NT);
-  }
+	omp_set_num_threads(NT);
 
-  //LDIM latent dimension - the inner dimension for factorization
-  int LDIM = 5; //the default value
-  if (argc > 3) {
-    LDIM = atoi(argv[3]);
-  }
   cout << "Memory size " << M << " and latent dimension is " << LDIM << endl;
-  
-  //EPOCHS number of maximum outer iterations
-  int EPOCHS = 1000;
-  if (argc > 4) {
-    EPOCHS = atoi(argv[4]);
-  }
-
-  //MAX_TIME maximum time allowed for factorization in seconds
-  int MAX_TIME = 100;
-  if (argc>5) {
-    MAX_TIME = atoi(argv[5]);
-    cout << "Maximum allowed time is " << MAX_TIME << " seconds" << endl;
-  }
+  cout << "Maximum allowed time is " << MAX_TIME << " seconds" << endl;
   
   //these arrays will be used for permutation where neccessary
   temp_indices = new int[nnz * tensor_dim];
   temp_vals = new double[nnz];
   
   int NO_CHUNK = pow(NT, tensor_dim - 1); //the strata size and the number of stratas/chunks is determined w.r.t. the number of threads
-  cout << "No strata is " << NO_CHUNK << endl;
+  cout << "Number of strata is " << NO_CHUNK << endl;
 
   //these will be used to reorganize the data points in the matrix for stratification
   int* tids = new int[nnz]; 
@@ -536,25 +578,10 @@ int main(int argc, char *argv[]) {
     Y_row[i] = gsl_matrix_row(&Y.matrix, i);
   }
 
-  //parameters
-  double etaGD = 0.001;
-  double etaLB = 0.06;
-  double gamma = 0.51;
-  double toma = 500;
 
-  //to avoid weird moves
-  int memoryCounter = 0;
-  double validityThreshold = 1.0e-6;
-
-  cout << "etaGD: " << etaGD << " -  etaLB: " << etaLB << " - gamma:" << gamma << endl;
-
+ 
   //-------------------------------------------------------------------------
   // Random Initialization
-  long int my_seed = 1453;
-  if (argc > 6) {
-    my_seed = atoi(argv[6]);
-  }
-  cout << "Random seed is " << my_seed << endl;
   rgen.seed(my_seed);
 
   randi_gsl_matrix(&A.matrix);
@@ -885,8 +912,8 @@ int main(int argc, char *argv[]) {
     gsl_blas_ddot (&A_row[i].vector, &B_col[j].vector, &res);
     double tmp = vals[nz]-res;
     err += tmp*tmp;
-    if (err != err)
-		break;
+    /*if (err != err)
+		break;*/
   }
   cout << "Final error is:  " << sqrt(err/nnz) << " in " << e << " iterations" << endl;
 
