@@ -885,6 +885,8 @@ int main(int argc, char *argv[]) {
     gsl_blas_ddot (&A_row[i].vector, &B_col[j].vector, &res);
     double tmp = vals[nz]-res;
     err += tmp*tmp;
+    if (err != err)
+		break;
   }
   cout << "Final error is:  " << sqrt(err/nnz) << " in " << e << " iterations" << endl;
 
