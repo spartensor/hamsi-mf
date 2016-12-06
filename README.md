@@ -35,6 +35,9 @@ Example: 1M.dat (MovieLens data with 1 million nonzero entries)
 528 1 4
 ...
 ```
+## Files
+The code consists of a single file, `hamsi_sharedmem.cpp`. The Movielens 1M, 10M and 20M data files used in the research paper are provided in the `data.zip` file. Note that these are not identical to the data files in the MovieLens web site; the data format has been changed to accomodate the input standard of HAMSI.
+
 ## Compiling
 The code is written in C++. The OpenMP library and GSL (GNU Scientific Library) development files are required.
 
