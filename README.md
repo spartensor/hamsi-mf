@@ -7,6 +7,21 @@ The code in this repository is designed for _matrix factorization_: Given an m-b
 
 This code contains only the "balanced strata" scheme for parallelization, which gives the best results compared to other schemes. If you want to experiment with the other schemes we have used in our research, please contact us.
 
+## Application -- MovieLens movie ratings database
+We have tested our matrix factorization algorithm with a real-life example, the [MovieLens data](http://grouplens.org/datasets/movielens/). In particular, we have used the 1M, 10M, and 20M datasets (after light preprocessing to make it compatible with the HAMSI input format).
+
+The accompanying research paper contains the table of results (final rms errors) for fixed settings of the parameters. In addition to that, we have explored the parameter space in order to find smaller errors (a better approximation to the original matrix).
+
+Using 50 as the latent dimension size and running the algorithm for 2000 seconds, our best results so far are:
+
+|dataset|toma|gamma|etaLB|rmse|
+|-------|-----|----|-----|----|
+|1M|500|0.4|0.02|0.502|
+|10M|500|0.1|0.01|0.586|
+|20M|1000|0.1|0.01|0.651|
+
+Please see the following sections for more information about replicating these results.
+
 ## Input data format
 HAMSI admits a sparse matrix, represented as follows in a plain text file:
 ```
@@ -77,6 +92,7 @@ hamsi --infile=<data file>
 |etaLB|Step size adjustment parameter|0.06|
 |toma|Initial value for the L-BFGS scaling factor|500|
 |memory|Memory size for L-BFGS|5|
+|output|The file stem for the two files that store the resulting factor matrices.|factor|
 
 Examples:
 
@@ -88,18 +104,11 @@ Notes:
 
 1. In the first use of the data file, HAMSI generates a binary copy for more efficient computation and storage. It is stored in the same directory. If you do not erase it, the binary copy will be reused in the next run of the program.
 
+2. The output refers to the two resulting matrices `X1` and `X2` such that their product `X1X2` approximated the original matrix. By default the matrices are stored in files `factor1.dat` and `factor2.dat`, respectively. The 
+
 ## Output
-HAMSI displays the details of iteration (such as time, iteration number and error) at each step on standard output (the screen). The resulting factor matrices are stored in files named `factor1.dat` and `factor2.dat` in tabular text form. File `factor1.dat` has `m` rows and `k` columns, and file `factor2.dat` has `k` rows and `n` columns. Columns are separated with space, rows are separated with newline character.
+HAMSI displays the details of iteration (such as time, iteration number and error) at each step on standard output (the screen). The resulting factor matrices are stored in files named `factor1.dat` and `factor2.dat` by default, in tabular text form. File `factor1.dat` has `m` rows and `k` columns, and file `factor2.dat` has `k` rows and `n` columns. Columns are separated with space, rows are separated with newline character. The file names can be changed with the command-line options `-o` or `--output=`. For example, the command
 
-## Application -- MovieLens movie ratings database
-We have tested our matrix factorization algorithm with a real-life example, the [MovieLens data](http://grouplens.org/datasets/movielens/). In particular, we have used the 1M, 10M, and 20M datasets (after light preprocessing to make it compatible with the HAMSI input format).
+`./hamsi -f 1M.dat --output=1M_matrix`
 
-The accompanying research paper contains the table of results (final rms errors) for fixed settings of the parameters. In addition to that, we have explored the parameter space in order to find smaller errors (a better approximation to the original matrix).
-
-Using 50 as the latent dimension size and running the algorithm for 2000 seconds, our best results so far are:
-
-|dataset|toma|gamma|etaLB|rmse|
-|-------|-----|----|-----|----|
-|1M|500|0.4|0.02|0.502|
-|10M|500|0.1|0.01|0.586|
-|20M|1000|0.1|0.01|0.651|
+generates two files `1M_matrix1.dat` and `1M_matrix2.dat` to store the resulting matrices.
