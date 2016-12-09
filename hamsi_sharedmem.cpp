@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 	if (argc == 1) {
 		cout << "Usage: " 
 		<< argv[0] 
-		<< " -f <filename> [-t<number of threads>] "
+		<< " -f <filename> [-p<number of threads>] "
 		<< "[-l<latent dim>] [-i<max. number of iterations>] "
 		<< "[-t<max time>] [-s<random seed>] "
 		<< "[-g<gamma>] [-e<etaLB>] "
@@ -160,7 +160,6 @@ int main(int argc, char **argv) {
 	}
   cout << "etaGD " << etaGD << " -  etaLB: " << etaLB << " - gamma:" << gamma << endl;
   cout << "Random seed is " << my_seed << endl;
-  return 0;
 
   sprintf(bfile, "%s.bin", filename);
   bp = fopen(bfile, "rb");
@@ -900,7 +899,7 @@ int main(int argc, char **argv) {
      }
      if (err != err)
 		break;
-      cout << "Current error is:  " << sqrt(err/nnz) << " in " << e << " iterations" << endl;
+      cout << "Current error is: " << sqrt(err/nnz) << " in " << e << " iterations" << endl;
 #endif
     }
   }
