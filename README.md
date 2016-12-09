@@ -73,13 +73,15 @@ hamsi --infile=<data file>
 |max iteration|Stop the computation after so many iterations.|1000|
 |max time|Stop the computation after so many seconds of wallclock time.|100|
 |seed|The seed for random number generation.|1453|
-|gamma||0.51|
-|etaLB||0.06|
-|toma||500|
-|memory||5|
+|gamma|Step size adjustment parameter|0.51|
+|etaLB|Step size adjustment parameter|0.06|
+|toma|Initial value for the L-BFGS scaling factor|500|
+|memory|Memory size for L-BFGS|5|
 
 Examples:
+
 `./hamsi -f 1M.dat -p4 -l50 -i5000 -t10 -s123`
+
 `./hamsi -f 1M.dat --nthreads=4 --latentdim=50 --maxtime=10 --gamma=0.4 --eta=0.05`
 
 Notes:
