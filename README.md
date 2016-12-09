@@ -7,6 +7,21 @@ The code in this repository is designed for _matrix factorization_: Given an m-b
 
 This code contains only the "balanced strata" scheme for parallelization, which gives the best results compared to other schemes. If you want to experiment with the other schemes we have used in our research, please contact us.
 
+## Application -- MovieLens movie ratings database
+We have tested our matrix factorization algorithm with a real-life example, the [MovieLens data](http://grouplens.org/datasets/movielens/). In particular, we have used the 1M, 10M, and 20M datasets (after light preprocessing to make it compatible with the HAMSI input format).
+
+The accompanying research paper contains the table of results (final rms errors) for fixed settings of the parameters. In addition to that, we have explored the parameter space in order to find smaller errors (a better approximation to the original matrix).
+
+Using 50 as the latent dimension size and running the algorithm for 2000 seconds, our best results so far are:
+
+|dataset|toma|gamma|etaLB|rmse|
+|-------|-----|----|-----|----|
+|1M|500|0.4|0.02|0.502|
+|10M|500|0.1|0.01|0.586|
+|20M|1000|0.1|0.01|0.651|
+
+Please see the following sections for more information about replicating these results.
+
 ## Input data format
 HAMSI admits a sparse matrix, represented as follows in a plain text file:
 ```
@@ -97,16 +112,3 @@ HAMSI displays the details of iteration (such as time, iteration number and erro
 `./hamsi -f 1M.dat --output=1M_matrix`
 
 generates two files `1M_matrix1.dat` and `1M_matrix2.dat` to store the resulting matrices.
-
-## Application -- MovieLens movie ratings database
-We have tested our matrix factorization algorithm with a real-life example, the [MovieLens data](http://grouplens.org/datasets/movielens/). In particular, we have used the 1M, 10M, and 20M datasets (after light preprocessing to make it compatible with the HAMSI input format).
-
-The accompanying research paper contains the table of results (final rms errors) for fixed settings of the parameters. In addition to that, we have explored the parameter space in order to find smaller errors (a better approximation to the original matrix).
-
-Using 50 as the latent dimension size and running the algorithm for 2000 seconds, our best results so far are:
-
-|dataset|toma|gamma|etaLB|rmse|
-|-------|-----|----|-----|----|
-|1M|500|0.4|0.02|0.502|
-|10M|500|0.1|0.01|0.586|
-|20M|1000|0.1|0.01|0.651|
