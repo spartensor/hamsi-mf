@@ -63,7 +63,7 @@ To compile on the command line:
 The `hamsi` executable takes the following command line arguments.
 ```
 hamsi <data file> [-p<number of threads>] [-l<latent dimension>] [-i<max iteration>]
-[-t<max time>] [-s<seed>] [-g<gamma>] [-e<etaLB>] [-a<toma>] [-m<memory size>]
+[-t<max time>] [-s<seed>] [-g<gamma>] [-e<etaLB>] [-a<sigma>] [-m<memory size>]
 ```
 or, with long option names:
 ```
@@ -75,7 +75,7 @@ hamsi <data file>
       [--randomseed=<seed>]
       [--gamma=<gamma>]
       [--eta=<etaLB>]
-      [--toma=<toma>]
+      [--sigma=<sigma>]
       [--memory=<memory size>]
 ```
 
@@ -89,7 +89,7 @@ hamsi <data file>
 |seed|The seed for random number generation.|1453|
 |gamma|Step size adjustment parameter|0.51|
 |etaLB|Step size adjustment parameter|0.06|
-|toma|Initial value for the L-BFGS scaling factor|500|
+|sigma|Initial value for the L-BFGS scaling factor|500|
 |memory|Memory size for L-BFGS|5|
 
 Examples:
