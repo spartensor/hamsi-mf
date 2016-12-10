@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 	if (argc == 1) {
 		cout << "Usage: " 
 		<< argv[0] 
-		<< " -f <filename> [-p<number of threads>] "
+		<< "[-p<number of threads>] "
 		<< "[-l<latent dim>] [-i<max. number of iterations>] "
 		<< "[-t<max time>] [-s<random seed>] "
 		<< "[-g<gamma>] [-e<etaLB>] "
@@ -115,13 +115,13 @@ int main(int argc, char **argv) {
 		<< "[-o<output file name>]" << endl;
 	return 0;
 	}
-
+	
 	/* Parse command-line arguments */
+	strcpy(filename,argv[1]);
 	{
-		static const char *optString = "f:g::m::a::e::p::l::i::t::s::o::";
+		static const char *optString = "g::m::a::e::p::l::i::t::s::o::";
 		static struct option long_options[] =
 		{
-			{"infile", required_argument, NULL, 'f'},
 			{"gamma", optional_argument, NULL, 'g'},
 			{"memory",optional_argument, NULL, 'm'},
 			{"toma",optional_argument, NULL, 'a'},
@@ -142,7 +142,6 @@ int main(int argc, char **argv) {
 		{
 		  switch (opt)
 		  {
-			  case 'f': strcpy(filename,optarg); break;
 			  case 'g': gamma =atof(optarg); break;
 			  case 'm': M = atoi(optarg); break;
 			  case 'a': toma = atof(optarg); break;
