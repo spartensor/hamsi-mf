@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
 		<< "[-l<latent dim>] [-i<max. number of iterations>] "
 		<< "[-t<max time>] [-s<random seed>] "
 		<< "[-g<gamma>] [-e<etaLB>] "
-		<< "[-a<toma>] [-m<memory size>] "
+		<< "[-a<sigma>] [-m<memory size>] "
 		<< endl;
 	return 0;
 	}
@@ -123,7 +123,8 @@ int main(int argc, char **argv) {
 		{
 			{"gamma", optional_argument, NULL, 'g'},
 			{"memory",optional_argument, NULL, 'm'},
-			{"toma",optional_argument, NULL, 'a'},
+			{"sigma", optional_argument, NULL, 'a'},
+			{"toma",optional_argument, NULL, 'a'}, // retained for backward compatibility
 			{"eta", optional_argument, NULL, 'e'},
 			{"nthreads", optional_argument, NULL, 'p'},
 			{"latentdim", optional_argument, NULL, 'l'},
@@ -153,6 +154,7 @@ int main(int argc, char **argv) {
 		}
 
 	}
+	cout << "sigma " << toma << endl;
   cout << "etaGD " << etaGD << " -  etaLB: " << etaLB << " - gamma:" << gamma << endl;
   cout << "Random seed is " << my_seed << endl;
 
