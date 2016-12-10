@@ -1,11 +1,11 @@
 # hamsi-mf: HAMSI for matrix factorization
 HAMSI (Hessian Approximated Multiple Subsets Iteration) is an incremental optimization algorithm for large-scale problems. It is a parallelized algorithm, with careful load balancing for better performance. The algorithm uses quadratic approximations and a quasi-Newton method (L-BFGS) to find the optimum in each incremental step.
 
-The code given here is developed for research purposes. The related research article (also in this repository) can be consulted for theoretical and algorithmic details.
+The code given here is developed for research purposes. The related research article (ArXiv link to be added) can be consulted for theoretical and algorithmic details.
 
-The code in this repository is designed for _matrix factorization_: Given an m-by-n sparse matrix M, find two matrices X (m-by-k) and Y (k-by-n) such that their product XY is approximately equal to M. The objective function we minimize is the root-mean-square error.
+The code in this repository is designed for **matrix factorization**: Given an m-by-n sparse matrix M, find two matrices X (m-by-k) and Y (k-by-n) such that their product XY is approximately equal to M. The objective function we minimize is the root-mean-square error.
 
-This code contains only the "balanced strata" scheme for parallelization, which gives the best results compared to other schemes. If you want to experiment with the other schemes we have used in our research, please contact us.
+This code contains only the "balanced strata" scheme for parallelization, which gives the best results compared to other schemes we've used. If you want to experiment with the other schemes used in our research, please contact us.
 
 ## Application -- MovieLens movie ratings database
 We have tested our matrix factorization algorithm with a real-life example, the [MovieLens data](http://grouplens.org/datasets/movielens/). In particular, we have used the 1M, 10M, and 20M datasets (after light preprocessing to make it compatible with the HAMSI input format).
@@ -62,12 +62,12 @@ To compile on the command line:
 ## Usage
 The `hamsi` executable takes the following command line arguments.
 ```
-hamsi -f <data file> [-p<number of threads>] [-l<latent dimension>] [-i<max iteration>]
-[-t<max time>] [-s<seed>] [-g<gamma>] [-e<etaLB>] [-a<toma>] [-m<memory size>] [-o<results file>]
+hamsi <data file> [-p<number of threads>] [-l<latent dimension>] [-i<max iteration>]
+[-t<max time>] [-s<seed>] [-g<gamma>] [-e<etaLB>] [-a<toma>] [-m<memory size>]
 ```
 or, with long option names:
 ```
-hamsi --infile=<data file>
+hamsi <data file>
       [--nthreads=<number of threads>]
       [--latentdim=<latent dimension>]
       [--maxiters=<max iteration>]
@@ -77,7 +77,6 @@ hamsi --infile=<data file>
       [--eta=<etaLB>]
       [--toma=<toma>]
       [--memory=<memory size>]
-      [--output=<results file>]
 ```
 
 |Argument|Description|Default value|
@@ -92,23 +91,17 @@ hamsi --infile=<data file>
 |etaLB|Step size adjustment parameter|0.06|
 |toma|Initial value for the L-BFGS scaling factor|500|
 |memory|Memory size for L-BFGS|5|
-|output|The file stem for the two files that store the resulting factor matrices.|factor|
 
 Examples:
 
-`./hamsi -f 1M.dat -p4 -l50 -i5000 -t10 -s123`
+`./hamsi 1M.dat -p4 -l50 -i5000 -t10 -s123`
 
-`./hamsi -f 1M.dat --nthreads=4 --latentdim=50 --maxtime=10 --gamma=0.4 --eta=0.05`
+`./hamsi 1M.dat --nthreads=4 --latentdim=50 --maxtime=10 --gamma=0.4 --eta=0.05`
 
 Notes:
 
-1. In the first use of the data file, HAMSI generates a binary copy for more efficient computation and storage. It is stored in the same directory. If you do not erase it, the binary copy will be reused in the next run of the program.
+- In the first use of the data file, HAMSI generates a binary copy for more efficient computation and storage. It is stored in the same directory. If you do not erase it, the binary copy will be reused in the next run of the program.
 
-2. The output refers to the two resulting matrices `X1` and `X2` such that their product `X1X2` approximated the original matrix. By default the matrices are stored in files `factor1.dat` and `factor2.dat`, respectively. The 
 
 ## Output
-HAMSI displays the details of iteration (such as time, iteration number and error) at each step on standard output (the screen). The resulting factor matrices are stored in files named `factor1.dat` and `factor2.dat` by default, in tabular text form. File `factor1.dat` has `m` rows and `k` columns, and file `factor2.dat` has `k` rows and `n` columns. Columns are separated with space, rows are separated with newline character. The file names can be changed with the command-line options `-o` or `--output=`. For example, the command
-
-`./hamsi -f 1M.dat --output=1M_matrix`
-
-generates two files `1M_matrix1.dat` and `1M_matrix2.dat` to store the resulting matrices.
+HAMSI displays the details of iteration (such as time, iteration number and error) at each step on standard output (the screen). The resulting factor matrices are stored in files named `hamsi1.out` and `hamsi2.out` by default, in tabular text form. File `hamsi1.out` has `m` rows and `k` columns, and file `hamsi2.out` has `k` rows and `n` columns. Columns are separated with space, rows are separated with newline character.
