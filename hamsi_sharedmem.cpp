@@ -154,7 +154,6 @@ int main(int argc, char **argv) {
 		}
 
 	}
-	cout << "sigma " << toma << endl;
   cout << "etaGD " << etaGD << " -  etaLB: " << etaLB << " - gamma:" << gamma << endl;
   cout << "Random seed is " << my_seed << endl;
 
