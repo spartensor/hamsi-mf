@@ -14,7 +14,7 @@ The accompanying research paper contains the table of results (final rms errors)
 
 Using 50 as the latent dimension size and running the algorithm for 2000 seconds, our best results so far are:
 
-|dataset|toma|gamma|etaLB|rmse|
+|dataset|sigma|gamma|etaLB|rmse|
 |-------|-----|----|-----|----|
 |1M|500|0.4|0.02|0.502|
 |10M|500|0.1|0.01|0.586|
