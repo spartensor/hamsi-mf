@@ -12,15 +12,27 @@ We have tested our matrix factorization algorithm with a real-life example, the 
 
 The accompanying research paper contains the table of results (final rms errors) for fixed settings of the parameters. In addition to that, we have explored the parameter space in order to find smaller errors (a better approximation to the original matrix).
 
-Using 50 as the latent dimension size and running the algorithm for 2000 seconds, our best results so far are:
+Running the algorithm for 2000 seconds with 16 parallel threads, our best results so far are:
 
-|dataset|sigma|gamma|etaLB|rmse|
-|-------|-----|----|-----|----|
-|1M|500|0.4|0.02|0.502|
-|10M|500|0.1|0.01|0.586|
-|20M|1000|0.1|0.01|0.651|
+|latent dim|dataset|sigma|gamma|etaLB|rmse|
+|-------|-----|----|---|-----|----|
+|10|1M|1000|0.5|0.05|0.755|
+|10|10M|1000|0.5|0.05|0.736|
+|10|20M|1000|0.5|0.05|0.739|
+| | | | | | |
+|20|1M|1000|0.5|0.05|0.674|
+|20|10M|1000|0.25|0.05|0.680|
+|20|20M|1000|0.25|0.05|0.683|
+| | | | | | 
+|50|1M|500|0.4|0.02|0.502|
+|50|10M|500|0.1|0.01|0.586|
+|50|20M|1000|0.1|0.01|0.651|
+| | | | | | |
+|100|1M|1000|0.5|0.05|0.310|
+|100|10M|1000|0.5|0.05|0.729|
+|100|20M|1000|0.5|0.05|0.808|
 
-Please see the following sections for more information about replicating these results.
+Please see the following sections for more information about replicating these results. Note that these are the best results we got so far by trying out different parameters, and not necessarily the best possible results.
 
 ## Input data format
 HAMSI admits a sparse matrix, represented as follows in a plain text file:
