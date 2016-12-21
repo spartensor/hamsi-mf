@@ -5,7 +5,7 @@ HAMSI (Hessian Approximated Multiple Subsets Iteration) is an incremental optimi
 
 (Incidentally, "hamsi" is the Turkish name for a small type of fish from the Black Sea, also known as anchovy.)
 
-The code given here is developed for research purposes (however, it is ready to be used for sparse matrix factorization problems in general). The related research article (ArXiv link to be added) can be consulted for theoretical and algorithmic details.
+The code given here is developed for research purposes (however, it is ready to be used for sparse matrix factorization problems in general). For theoretical and algorithmic details, please see the related [research article](https://arxiv.org/abs/1509.01698).
 
 The code in this repository is designed for **matrix factorization**: Given an m-by-n sparse matrix M, find two matrices X (m-by-k) and Y (k-by-n) such that their product XY is approximately equal to M. The objective function we minimize is the root-mean-square error.
 
