@@ -27,14 +27,14 @@ normal_distribution<double> randn(0, 1);
 void output_results(gsl_vector* x, int size1, int size2, int latentsize)
 {
 	FILE *outfile;
-	outfile = fopen("factor1.dat","w");
+	outfile = fopen("hamsi1.out","w");
 	for(int row=0; row<size1; row++){
 		for(int col=0; col<latentsize; col++)
 			fprintf(outfile, "%f ",x->data[row*latentsize + col]);
 		fprintf(outfile,"\n");
 	}
 	fclose(outfile);
-	outfile = fopen("factor2.dat","w");
+	outfile = fopen("hamsi2.out","w");
 	for(int row=0; row<latentsize; row++){
 		for(int col=0; col<size2;col++)
 			fprintf(outfile, "%f ",x->data[row + (size1+col)*latentsize]);
@@ -103,36 +103,34 @@ int main(int argc, char **argv) {
 	int EPOCHS = 1000; // number of maximum outer iterations
 	int MAX_TIME = 100; //maximum time allowed for factorization in seconds
 	long int my_seed = 1453; // the random seed
-	char outfile[250] = "factor";
 	if (argc == 1) {
 		cout << "Usage: " 
 		<< argv[0] 
-		<< " -f <filename> [-t<number of threads>] "
+		<< "[-p<number of threads>] "
 		<< "[-l<latent dim>] [-i<max. number of iterations>] "
 		<< "[-t<max time>] [-s<random seed>] "
 		<< "[-g<gamma>] [-e<etaLB>] "
-		<< "[-a<toma>] [-m<memory size>] "
-		<< "[-o<output file name>]" << endl;
+		<< "[-a<sigma>] [-m<memory size>] "
+		<< endl;
 	return 0;
 	}
-
+	
 	/* Parse command-line arguments */
+	strcpy(filename,argv[1]);
 	{
-		static const char *optString = "f:g::m::a::e::p::l::i::t::s::o::";
+		static const char *optString = "g::m::a::e::p::l::i::t::s::";
 		static struct option long_options[] =
 		{
-			{"infile", required_argument, NULL, 'f'},
 			{"gamma", optional_argument, NULL, 'g'},
 			{"memory",optional_argument, NULL, 'm'},
-			{"toma",optional_argument, NULL, 'a'},
+			{"sigma", optional_argument, NULL, 'a'},
+			{"toma",optional_argument, NULL, 'a'}, // retained for backward compatibility
 			{"eta", optional_argument, NULL, 'e'},
 			{"nthreads", optional_argument, NULL, 'p'},
 			{"latentdim", optional_argument, NULL, 'l'},
 			{"maxiters", optional_argument, NULL, 'i'},
 			{"maxtime", optional_argument, NULL, 't'},
 			{"randomseed", optional_argument, NULL, 's'},
-			{"output", optional_argument, NULL, 'o'},
-			//{"help", no_argument, NULL, 'h'},
 			{0,0,0,0}
 		};
 		/* getopt_long stores the option index here. */
@@ -142,7 +140,6 @@ int main(int argc, char **argv) {
 		{
 		  switch (opt)
 		  {
-			  case 'f': strcpy(filename,optarg); break;
 			  case 'g': gamma =atof(optarg); break;
 			  case 'm': M = atoi(optarg); break;
 			  case 'a': toma = atof(optarg); break;
@@ -152,7 +149,6 @@ int main(int argc, char **argv) {
 			  case 'i': EPOCHS = atoi(optarg); break;
 			  case 't': MAX_TIME = atoi(optarg); break;
 			  case 's': my_seed = atol(optarg); break;
-			  case 'o': strcpy(outfile, optarg); break;
 		  }
 		  opt = getopt_long( argc, argv, optString, long_options, &option_index );
 		}
@@ -160,7 +156,6 @@ int main(int argc, char **argv) {
 	}
   cout << "etaGD " << etaGD << " -  etaLB: " << etaLB << " - gamma:" << gamma << endl;
   cout << "Random seed is " << my_seed << endl;
-  return 0;
 
   sprintf(bfile, "%s.bin", filename);
   bp = fopen(bfile, "rb");
@@ -900,7 +895,7 @@ int main(int argc, char **argv) {
      }
      if (err != err)
 		break;
-      cout << "Current error is:  " << sqrt(err/nnz) << " in " << e << " iterations" << endl;
+      cout << "Current error is: " << sqrt(err/nnz) << " in " << e << " iterations" << endl;
 #endif
     }
   }
