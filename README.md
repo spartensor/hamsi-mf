@@ -1,7 +1,11 @@
+![hamsi](img/hamsi.png)
+
 # hamsi-mf: HAMSI for matrix factorization
 HAMSI (Hessian Approximated Multiple Subsets Iteration) is an incremental optimization algorithm for large-scale problems. It is a parallelized algorithm, with careful load balancing for better performance. The algorithm uses quadratic approximations and a quasi-Newton method (L-BFGS) to find the optimum in each incremental step.
 
-The code given here is developed for research purposes. The related research article (ArXiv link to be added) can be consulted for theoretical and algorithmic details.
+(Incidentally, "hamsi" is the Turkish name for a small type of fish from the Black Sea, also known as anchovy.)
+
+The code given here is developed for research purposes (however, it is ready to be used for sparse matrix factorization problems in general). The related research article (ArXiv link to be added) can be consulted for theoretical and algorithmic details.
 
 The code in this repository is designed for **matrix factorization**: Given an m-by-n sparse matrix M, find two matrices X (m-by-k) and Y (k-by-n) such that their product XY is approximately equal to M. The objective function we minimize is the root-mean-square error.
 
