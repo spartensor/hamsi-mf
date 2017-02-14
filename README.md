@@ -1,9 +1,7 @@
-![hamsi](img/hamsi.png)
+![hamsi](img/hamsi.png) *
 
 # hamsi-mf: HAMSI for matrix factorization
 HAMSI (Hessian Approximated Multiple Subsets Iteration) is an incremental optimization algorithm for large-scale problems. It is a parallelized algorithm, with careful load balancing for better performance. The algorithm uses quadratic approximations and a quasi-Newton method (L-BFGS) to find the optimum in each incremental step.
-
-(Incidentally, "hamsi" is the Turkish name for a small type of fish from the Black Sea, also known as anchovy.)
 
 The code given here is developed for research purposes (however, it is ready to be used for sparse matrix factorization problems in general). For theoretical and algorithmic details, please see the related [research article](https://arxiv.org/abs/1509.01698).
 
@@ -12,9 +10,9 @@ The code in this repository is designed for **matrix factorization**: Given an m
 This code contains only the "balanced strata" scheme for parallelization, which gives the best results compared to other schemes we've used. If you want to experiment with the other schemes used in our research, please contact us.
 
 ## Application -- MovieLens movie ratings database
-We have tested our matrix factorization algorithm with a real-life example, the [MovieLens data](http://grouplens.org/datasets/movielens/). In particular, we have used the 1M, 10M, and 20M datasets (after light preprocessing to make it compatible with the HAMSI input format).
+We have tested our matrix factorization algorithm on the [MovieLens data](http://grouplens.org/datasets/movielens/). In particular, we have used the 1M, 10M, and 20M datasets (after a straightforward preprocessing step to make it compatible with the HAMSI input format).
 
-The accompanying research paper contains the table of results (final rms errors) for fixed settings of the parameters. In addition to that, we have explored the parameter space in order to find smaller errors (a better approximation to the original matrix).
+The accompanying research paper contains the table of results (final rms errors) for fixed settings of the algorithm parameters.
 
 Running the algorithm for 2000 seconds with 16 parallel threads, our best results so far are:
 
@@ -36,10 +34,12 @@ Running the algorithm for 2000 seconds with 16 parallel threads, our best result
 |100|10M|1000|0.5|0.05|0.729|
 |100|20M|1000|0.5|0.05|0.808|
 
-Please see the following sections for more information about replicating these results. Note that these are the best results we got so far by trying out different parameters, and not necessarily the best possible results.
+These are the best results we got so far by random restarts and different algorithm parameters; it is possible that the results can be further improved with more careful tuning.
+
+Please see the following sections for more information about replicating the simulation results. 
 
 ## Input data format
-HAMSI admits a sparse matrix, represented as follows in a plain text file:
+The input is a sparse matrix, represented as follows in a plain text file:
 ```
 ndim
 size1 size2
@@ -67,12 +67,12 @@ Example: 1M.dat (MovieLens data with 1 million nonzero entries)
 ...
 ```
 ## Files
-The code consists of a single file, `hamsi_sharedmem.cpp`. The Movielens 1M, 10M and 20M data files used in the research paper are provided in the `data.zip` file. Note that these are not identical to the data files in the MovieLens web site; the data format has been changed to accomodate the input standard of HAMSI.
+The code consists of a single file, `hamsi_sharedmem.cpp`. The Movielens 1M, 10M and 20M data files used in the research paper are provided in the `data.zip` file. Note that the format of these files are not identical to the original data files distributed from the MovieLens web site, but the contents are.
 
 ## Compiling
-The code is written in C++. The OpenMP library and GSL (GNU Scientific Library) development files are required.
+The code is written in C++ 0x11. The OpenMP library and GSL (GNU Scientific Library) development files are required.
 
-To compile on the command line:
+To compile on the command line use:
 `g++ -std=c++11 hamsi_sharedmem.cpp -lgsl -lgslcblas -fopenmp -O3 -o hamsi`
 
 ## Usage
@@ -116,8 +116,10 @@ Examples:
 
 Notes:
 
-- In the first use of the data file, HAMSI generates a binary copy for more efficient computation and storage. It is stored in the same directory. If you do not erase it, the binary copy will be reused in the next run of the program.
-
+- In the first use of a data file, HAMSI generates a binary data file in the same directory for more efficient computation and storage.  If you do not erase it, the binary copy will be reused in the next run of the program.
 
 ## Output
-HAMSI displays the details of iteration (such as time, iteration number and error) at each step on standard output (the screen). The resulting factor matrices are stored in files named `hamsi1.out` and `hamsi2.out` by default, in tabular text form. File `hamsi1.out` has `m` rows and `k` columns, and file `hamsi2.out` has `k` rows and `n` columns. Columns are separated with space, rows are separated with newline character.
+HAMSI displays the details of each iteration (such as time, iteration number and error) on standard output. The resulting factor matrices are stored in files named `hamsi1.out` and `hamsi2.out` by default, in tabular text form. File `hamsi1.out` has `m` rows and `k` columns, and file `hamsi2.out` has `k` rows and `n` columns. Columns are separated with space, rows are separated with newline character.
+
+
+(* Incidentally, "hamsi" is the Turkish name for a small type of fish from the Black Sea, also known as anchovy.)
