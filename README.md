@@ -1,5 +1,7 @@
 ![hamsi](img/hamsi.png) *
 
+This work has been published in Computational Optimization and Applications. You can access the paper [from this link](https://link.springer.com/article/10.1007/s10589-018-00057-7).
+
 # hamsi-mf: HAMSI for matrix factorization
 HAMSI (Hessian Approximated Multiple Subsets Iteration) is an incremental optimization algorithm for large-scale problems. It is a parallelized algorithm, with careful load balancing for better performance. The algorithm uses quadratic approximations and a quasi-Newton method (L-BFGS) to find the optimum in each incremental step.
 
